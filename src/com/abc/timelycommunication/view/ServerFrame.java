@@ -1,6 +1,7 @@
 package com.abc.timelycommunication.view;
 
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -21,10 +22,13 @@ public class ServerFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextArea textArea;
+	private JButton btnNewButton;
 	public JTextArea getTextArea() {
 		return textArea;
 	}
-
+	public JButton getBtnNewButton() {
+		return btnNewButton;
+	}
 	private Server s;
 
 	/**
@@ -52,6 +56,7 @@ public class ServerFrame extends JFrame {
 		
 		setTitle("服务器端");
 		setResizable(false);//随意改变窗口大小
+		setIconImage(Toolkit.getDefaultToolkit().createImage("resource/pictures/logo.jpg"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 456, 428);
 		contentPane = new JPanel();
@@ -68,7 +73,7 @@ public class ServerFrame extends JFrame {
 		textArea.setEditable(false);
 		scrollPane.setViewportView(textArea);
 		
-		JButton btnNewButton = new JButton("\u5F00\u542F\u670D\u52A1\u7AEF");
+		btnNewButton = new JButton("\u5F00\u542F\u670D\u52A1\u7AEF");
 		btnNewButton.setBounds(66, 283, 113, 23);
 		btnNewButton.addActionListener(new ActionListener() {
 			@Override
@@ -106,4 +111,5 @@ public class ServerFrame extends JFrame {
 		textPane.setBounds(28, 24, 120, 21);
 		contentPane.add(textPane);
 	}
+
 }

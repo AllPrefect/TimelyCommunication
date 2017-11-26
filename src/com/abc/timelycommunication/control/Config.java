@@ -6,5 +6,5 @@ public interface Config {
 	//服务端IP
 	public String serverIP="127.0.0.1";
 	//服务端端口号
-	public  int port=8888;
+	public  int port=9527;
 }

@@ -40,6 +40,7 @@ public class MainFrame extends JFrame {
 		JLabel headportrait=new JLabel();//Í·Ïñ
 		headportrait.setBounds(200,10,80,100);
 		headportrait.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage("resource/avatar/1.jpg").getScaledInstance(80, 100, Image.SCALE_DEFAULT)));
+		this.add(headportrait);
 		
 		searchList=new JTextField(" ËÑË÷...");
 		searchList.setBounds(5, 112, 235, 20);
@@ -67,9 +68,9 @@ public class MainFrame extends JFrame {
 		this.add(searchButton);
 		
 		JTree tree = new JTree();
-		tree.setToolTipText("123");
+		tree.setToolTipText("");
 		tree.setEditable(true);
-		tree.setBounds(15, 140, 260, 300);
+		tree.setBounds(15, 140, 260, 500);
 		this.add(tree);
 		
 		

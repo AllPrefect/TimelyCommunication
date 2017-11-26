@@ -94,8 +94,6 @@ public class LoginFrame extends JFrame {
 				//解决类与类之间的关联
 				c=new Client(LoginFrame.this);
 				Boolean result= c.connectServer();
-				
-				System.out.println("连接成功！");
 				 if(result) {
 					 //连接成功则显示主界面,隐藏登录界面
 					 MainFrame m=new MainFrame();
