@@ -74,6 +74,11 @@ public class User implements Serializable{//实现序列化需要先继承Serializable接口
 	public User() {
 		super();
 	}
+	public User(String username, String password) {
+		super();
+		this.username = username;
+		this.password = password;
+	}
 	
 	
 }

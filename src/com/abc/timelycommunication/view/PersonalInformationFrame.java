@@ -1,6 +1,5 @@
 package com.abc.timelycommunication.view;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -19,7 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
-public class personalInformationFrame extends JFrame {
+public class PersonalInformationFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -36,7 +35,7 @@ public class personalInformationFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					personalInformationFrame frame = new personalInformationFrame();
+					PersonalInformationFrame frame = new PersonalInformationFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,7 +47,7 @@ public class personalInformationFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public personalInformationFrame() {
+	public PersonalInformationFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 517, 479);
 		contentPane = new JPanel();

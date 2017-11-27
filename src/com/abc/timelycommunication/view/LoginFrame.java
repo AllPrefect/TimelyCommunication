@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,18 +18,31 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.abc.timelycommunication.control.Client;
+import com.abc.timelycommunication.control.LoginFrameListener;
 
 public class LoginFrame extends JFrame {
 	private Client c;//客户端对象
 	
 	private JLabel headImage,JLabel1,JLabel2;
-	private JTextField username;
+	private JComboBox username;
 	private JPasswordField password;
 	private JButton login,register; 
 	
-	public JTextField getUsername() {
+	
+	public JButton getLogin() {
+		return login;
+	}
+	public JButton getRegister() {
+		return register;
+	}
+	
+	public JPasswordField getPassword() {
+		return password;
+	}
+	public JComboBox getUsername() {
 		return username;
 	}
+	
 	public LoginFrame() {
 		setSize(340,300);//窗口大小
 		setLayout(null);//不采用任何默认的布局
@@ -57,7 +71,7 @@ public class LoginFrame extends JFrame {
 		JLabel1.setSize(30,20);
 		this.add(JLabel1);
 		
-		username=new JTextField("狗蛋");
+		username=new JComboBox(new Object[] {"狗蛋"});
 		username.setSize(150,20);
 		username.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		username.setLocation(95,165);
@@ -74,7 +88,7 @@ public class LoginFrame extends JFrame {
 		JLabel2.setSize(30,20);
 		this.add(JLabel2);
 		
-		password=new JPasswordField("123456");
+		password=new JPasswordField("666666");
 		password.setSize(150,20);
 		password.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		password.setLocation(95,195);
@@ -85,60 +99,14 @@ public class LoginFrame extends JFrame {
 		login.setSize(60, 25);
 		login.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		login.setLocation(95,230);
-		login.addMouseListener(new MouseListener() {
-			
-			public void mouseReleased(MouseEvent e) {
-				
-			}
-			public void mousePressed(MouseEvent e) {
-				//解决类与类之间的关联
-				c=new Client(LoginFrame.this);
-				Boolean result= c.connectServer();
-				 if(result) {
-					 //连接成功则显示主界面,隐藏登录界面
-					 MainFrame m=new MainFrame();
-					 m.setVisible(true);
-					 LoginFrame.this.setVisible(false);
-				 }else
-				 {
-					 JOptionPane.showMessageDialog(LoginFrame.this, "登陆失败", "温馨提示",JOptionPane.INFORMATION_MESSAGE);
-				 }
-				
-			}
-			public void mouseExited(MouseEvent e) {
-				login.setBackground(Color.LIGHT_GRAY);
-			}
-			public void mouseEntered(MouseEvent e) {
-				login.setBackground(Color.magenta);
-			}
-			
-			public void mouseClicked(MouseEvent e) {
-				
-			}
-		});
+		login.addMouseListener(new LoginFrameListener(LoginFrame.this));
 		this.add(login);
 		
 		register=new JButton("注册");
 		register.setSize(60, 25);
 		register.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		register.setLocation(185,230);
-		register.addMouseListener(new MouseListener() {
-			public void mouseReleased(MouseEvent e) {
-				
-			}
-			public void mousePressed(MouseEvent e) {
-				new RegisterFrame();
-			}
-			public void mouseExited(MouseEvent e) {
-				
-			}
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			public void mouseClicked(MouseEvent e) {
-				
-			}
-		});
+		register.addMouseListener(new LoginFrameListener(LoginFrame.this));
 		this.add(register);
 	}
 

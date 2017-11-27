@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.abc.timelycommunication.control.Server;
+import com.abc.timelycommunication.control.ServerButtonListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -22,13 +23,18 @@ public class ServerFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextArea textArea;
-	private JButton btnNewButton;
+	private JButton btnNewButton,btnNewButton_1;
+	
 	public JTextArea getTextArea() {
 		return textArea;
 	}
 	public JButton getBtnNewButton() {
 		return btnNewButton;
 	}
+	public JButton getBtnNewButton_1() {
+		return btnNewButton_1;
+	}
+	
 	private Server s;
 
 	/**
@@ -75,10 +81,14 @@ public class ServerFrame extends JFrame {
 		
 		btnNewButton = new JButton("\u5F00\u542F\u670D\u52A1\u7AEF");
 		btnNewButton.setBounds(66, 283, 113, 23);
+		btnNewButton.addActionListener(new ServerButtonListener(ServerFrame.this));
+		//调用Server类的监听器
+		/*
 		btnNewButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean startResult=s.startServer();
+				btnNewButton.setEnabled(false);//设置按钮不可用
 				//将启动信息显示在文本框
 				textArea.append(new Date().toLocaleString()+":\t服务器启动"+(startResult?"成功":"失败")+"!\r\n");
 				//弹出窗口
@@ -88,10 +98,13 @@ public class ServerFrame extends JFrame {
 				}
 			}
 		});
+		*/
 		contentPane.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("\u5173\u95ED\u670D\u52A1\u7AEF");
+		btnNewButton_1 = new JButton("\u5173\u95ED\u670D\u52A1\u7AEF");
 		btnNewButton_1.setBounds(243, 283, 113, 23);
+		btnNewButton_1.addActionListener(new ServerButtonListener(ServerFrame.this));
+		/*
 		btnNewButton_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -102,6 +115,7 @@ public class ServerFrame extends JFrame {
 				JOptionPane.showMessageDialog(ServerFrame.this, closeResult?"已关闭":"关闭失败了", "温馨提示", closeResult?JOptionPane.INFORMATION_MESSAGE:JOptionPane.ERROR_MESSAGE);
 			}
 		});
+		*/
 		contentPane.add(btnNewButton_1);
 		
 		JTextPane textPane = new JTextPane();

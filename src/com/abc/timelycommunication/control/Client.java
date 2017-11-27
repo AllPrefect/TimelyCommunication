@@ -22,12 +22,12 @@ public class Client {
 	public boolean connectServer() {
 		try {
 			client=new Socket(Config.serverIP,Config.port);
-			//向客户端发送字符流
+			//向服务端发送字符流
 			out=new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 			in=new BufferedReader(new InputStreamReader(client.getInputStream()));
-			//congloginFrame类获取账户名称信息
+			//从loginFrame类获取账户名称信息
 			//服务端接收按行读取要添加“\r\n”
-			out.write(frame.getUsername().getText()+"\r\n");
+			out.write(frame.getUsername().getSelectedItem()+"\r\n");
 			out.flush();
 			return true;
 		} catch (IOException e) {

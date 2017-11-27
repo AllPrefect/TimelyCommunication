@@ -14,11 +14,27 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
+import com.abc.timelycommunication.control.MainFrameListener;
+import com.abc.timelycommunication.model.User;
+
 public class MainFrame extends JFrame {
-	private JLabel headPicture;
+	private JLabel headPicture,headportrait,username;
 	private JTextField searchList;
 	private JButton searchButton;
-	public MainFrame() {
+	//接收登陆界面传来的用户对象
+	private User user;
+	
+	public JLabel getHeadportrait() {
+		return headportrait;
+	}
+	public JLabel getUsername() {
+		return username;
+	}
+	public JButton getSearchButton() {
+		return searchButton;
+	}
+	public MainFrame(User user) {
+		this.user=user;
 		setSize(300, 600);
 		setVisible(true);
 		setLayout(null);//不采用任何默认布局
@@ -33,17 +49,23 @@ public class MainFrame extends JFrame {
 	}
 	public void homeCompoment() {
 		headPicture=new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().createImage("resource/pictures/mainframe.gif")));
-		headPicture.setSize(300,110);
+		headPicture.setSize(300,125);
 		headPicture.setLocation(0,0);
 		this.add(headPicture);
 		
-		JLabel headportrait=new JLabel();//头像
-		headportrait.setBounds(200,10,80,100);
-		headportrait.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage("resource/avatar/1.jpg").getScaledInstance(80, 100, Image.SCALE_DEFAULT)));
-		this.add(headportrait);
+		headportrait=new JLabel();//头像
+		headportrait.setBounds(200,10,70,90);
+		headportrait.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(user.getImagepath()).getScaledInstance(80, 100, Image.SCALE_DEFAULT)));
+		headportrait.addMouseListener(new MainFrameListener(MainFrame.this));
+		headPicture.add(headportrait);
+		
+		username=new JLabel(user.getUsername());
+		username.setBounds(210,103,70,20);
+		username.addMouseListener(new MainFrameListener(MainFrame.this));
+		headPicture.add(username);
 		
 		searchList=new JTextField(" 搜索...");
-		searchList.setBounds(5, 112, 235, 20);
+		searchList.setBounds(5, 132, 235, 20);
 		searchList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		searchList.addFocusListener(new FocusListener() {
 			
@@ -64,19 +86,15 @@ public class MainFrame extends JFrame {
 		this.add(searchList);
 		
 		searchButton=new JButton("の");
-		searchButton.setBounds(245, 112, 35, 20);
+		searchButton.addMouseListener(new MainFrameListener(MainFrame.this));
+		searchButton.setBounds(245, 132, 35, 20);
 		this.add(searchButton);
 		
 		JTree tree = new JTree();
 		tree.setToolTipText("");
 		tree.setEditable(true);
-		tree.setBounds(15, 140, 260, 500);
+		tree.setBounds(15, 160, 260, 400);
 		this.add(tree);
 		
-		
 	}
-	
-	public static void main(String[] args) {
-	new MainFrame();
-	} 
 }

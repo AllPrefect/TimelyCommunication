@@ -16,7 +16,7 @@ import com.abc.timelycommunication.model.User;
 public class DataOperate {
 	//注册
 	public static boolean register(User user) {
-		File data=new File("database/"+user.getAccount()+".data");
+		File data=new File("database/"+user.getUsername()+".data");
 		if(data.exists())
 		return false;
 		return updateInformation(user);
@@ -24,7 +24,7 @@ public class DataOperate {
 	//修改个人信息
 	public static boolean updateInformation(User user) {
 		try {
-			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream("database/"+user.getAccount()+".data"));
+			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream("database/"+user.getUsername()+".data"));
 			out.writeObject(user);//将个人信息以序列化的方式保存
 			out.flush();
 			out.close();
@@ -35,17 +35,21 @@ public class DataOperate {
 		}
 	}
 	//登陆方法  User类型减少设置参数，更方便
-	public static User login(String account,String password) {
-		File data=new File("database/"+account+".data");
+	public static User login(String username,String password) {
+		File data=new File("database/"+username+".data");
 		if(!data.exists()) {
+			System.out.println("文件不存在！");
 			return null;
 		}else {
 			try {
-				ObjectInputStream  in=new ObjectInputStream(new FileInputStream("database/"+account+".data"));
+				ObjectInputStream  in=new ObjectInputStream(new FileInputStream("database/"+username+".data"));
 				User user=(User)in.readObject();
-				if(password.equals(user.getPassword())&&account.equals(user.getAccount())) {
+				
+				System.out.println(user);
+				if(password.equals(user.getPassword())&&username.equals(user.getUsername())) {
 					return user;
 				}else {
+					System.out.println("账户密码错误！");
 					return null;
 				}
 			} catch (Exception e) {
@@ -66,11 +70,11 @@ public class DataOperate {
 				user1.setFriends(friends);
 				
 				try {
-					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("database/"+user1.getAccount()+".data"));
+					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("database/"+user1.getUsername()+".data"));
 					out.writeObject(user1);
 					out.flush();
 					out.close();
-					out=new ObjectOutputStream(new FileOutputStream("database/"+user2.getAccount()+".data"));
+					out=new ObjectOutputStream(new FileOutputStream("database/"+user2.getUsername()+".data"));
 					out.writeObject(user2);
 					out.flush();
 					out.close();
@@ -80,7 +84,8 @@ public class DataOperate {
 					e.printStackTrace();
 				}
 				
-				
+		System.out.println(DataOperate.login("狗蛋","666666"));
+			
 			
 	}
 }
