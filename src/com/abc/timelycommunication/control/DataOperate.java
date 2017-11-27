@@ -66,7 +66,7 @@ public class DataOperate {
 		HashSet<User>  f1s=new HashSet<>();
 				f1s.add(user2);
 				
-				friends.put("大学室友", f1s);
+				friends.put("我的好友", f1s);
 				user1.setFriends(friends);
 				
 				try {

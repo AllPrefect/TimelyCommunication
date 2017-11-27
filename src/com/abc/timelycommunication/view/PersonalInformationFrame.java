@@ -17,7 +17,11 @@ import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
-
+/**
+ * 无法新建对象调用
+ * @author user
+ *
+ */
 public class PersonalInformationFrame extends JFrame {
 
 	private JPanel contentPane;

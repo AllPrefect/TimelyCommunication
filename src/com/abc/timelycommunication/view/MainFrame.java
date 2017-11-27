@@ -1,23 +1,32 @@
 package com.abc.timelycommunication.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.abc.timelycommunication.control.MainFrameListener;
 import com.abc.timelycommunication.model.User;
 
 public class MainFrame extends JFrame {
+	private JTree tree;
 	private JLabel headPicture,headportrait,username;
 	private JTextField searchList;
 	private JButton searchButton;
@@ -32,6 +41,9 @@ public class MainFrame extends JFrame {
 	}
 	public JButton getSearchButton() {
 		return searchButton;
+	}
+	public JTree getTree() {
+		return tree;
 	}
 	public MainFrame(User user) {
 		this.user=user;
@@ -89,12 +101,43 @@ public class MainFrame extends JFrame {
 		searchButton.addMouseListener(new MainFrameListener(MainFrame.this));
 		searchButton.setBounds(245, 132, 35, 20);
 		this.add(searchButton);
+		/**
+		 * 
+		 */
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(12, 160, 260, 400);
+		this.add(tabbedPane);
 		
-		JTree tree = new JTree();
-		tree.setToolTipText("");
-		tree.setEditable(true);
-		tree.setBounds(15, 160, 260, 400);
-		this.add(tree);
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("消息", null, panel, null);
 		
+		JPanel panel_1=new JPanel();
+		tabbedPane.addTab("联系人",null,panel_1,null);
+		panel_1.setLayout(new BorderLayout(0,0));
+		//定义根节点
+		DefaultMutableTreeNode  root=new DefaultMutableTreeNode("root");
+		Map<String,HashSet<User>> allfriends=user.getFriends();
+		//set集合获取所有分组名
+		Set<String> allgroupsname=allfriends.keySet();
+		for(String groupname:allgroupsname) {
+			//每个好友分组的节点
+			DefaultMutableTreeNode  group=new DefaultMutableTreeNode(groupname);
+			//根据键值遍历对应的好友
+			HashSet<User>  friendsOfGroup=allfriends.get(groupname);
+			for(User user:friendsOfGroup) {
+				DefaultMutableTreeNode  friend=new DefaultMutableTreeNode(user.getUsername());
+				group.add(friend);
+			}
+			root.add(group);
+		}
+		
+		tree = new JTree(root);
+		tree.addMouseListener(new MainFrameListener(MainFrame.this));
+		JScrollPane scrollPane= new JScrollPane(tree);
+		tree.setRootVisible(false);
+		panel_1.add(scrollPane, BorderLayout.CENTER);
+		
+		JPanel panel_2 = new JPanel();
+		tabbedPane.addTab("群组", null, panel_2, null);
 	}
 }
