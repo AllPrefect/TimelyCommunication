@@ -4,11 +4,17 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
@@ -17,10 +23,19 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import com.abc.timelycommunication.model.MessageBox;
+import com.abc.timelycommunication.model.User;
+
 public class RegisterFrame extends JFrame{
+	private JButton button_1;
 	private JPanel contentPane;
-	
-	public RegisterFrame() {
+	private JTextArea textArea;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
+	public RegisterFrame(ObjectOutputStream out,ObjectInputStream in) {
+		this.out=out;
+		this.in=in;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 517, 479);
 		setVisible(true);
@@ -29,7 +44,7 @@ public class RegisterFrame extends JFrame{
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JTextField textField = new JTextField();
+		JTextField textField = new JTextField("999999");
 		textField.setBounds(95, 30, 170, 28);
 		contentPane.add(textField);
 		textField.setColumns(10);
@@ -44,7 +59,7 @@ public class RegisterFrame extends JFrame{
 		label.setBounds(30, 72, 65, 25);
 		contentPane.add(label);
 		
-		JTextField textField_1 = new JTextField();
+		JTextField textField_1 = new JTextField("大狗子");
 		textField_1.setColumns(10);
 		textField_1.setBounds(95, 70, 170, 28);
 		contentPane.add(textField_1);
@@ -54,7 +69,7 @@ public class RegisterFrame extends JFrame{
 		label_1.setBounds(30, 152, 65, 25);
 		contentPane.add(label_1);
 		
-		JPasswordField passwordField = new JPasswordField();
+		JPasswordField passwordField = new JPasswordField("999999");
 		passwordField.setBounds(95, 150, 170, 28);
 		contentPane.add(passwordField);
 		
@@ -63,7 +78,7 @@ public class RegisterFrame extends JFrame{
 		lblNewLabel_1.setBounds(30, 192, 65, 25);
 		contentPane.add(lblNewLabel_1);
 		
-		JPasswordField passwordField_1 = new JPasswordField();
+		JPasswordField passwordField_1 = new JPasswordField("999999");
 		passwordField_1.setBounds(95, 190, 170, 28);
 		contentPane.add(passwordField_1);
 		
@@ -90,26 +105,69 @@ public class RegisterFrame extends JFrame{
 		radioButton_1.setBounds(182, 114, 60, 20);
 		contentPane.add(radioButton_1);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(139, 380, 93, 23);
-		contentPane.add(btnNewButton);
-		
 		JButton button = new JButton("\u786E\u8BA4");
-		button.setBounds(308, 380, 93, 23);
+		button.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+			//提取注册界面上的信息
+			String account=textField.getText().trim();
+			String username=textField_1.getText();
+			String sex=radioButton.isSelected()?"男":"女";
+			String password=passwordField.getText();
+			String passwordagain=passwordField_1.getText();
+			String touxiang="null";
+			String instruction=textArea.getText().toString();
+			if(!password.equals(passwordagain)) {
+				JOptionPane.showMessageDialog(RegisterFrame.this,"两次输入密码不一致","温馨提示", JOptionPane.ERROR_MESSAGE);
+			}else {
+				User newUser=new User(account,username,password,sex,touxiang,instruction);
+				MessageBox registerData=new MessageBox();
+				registerData.setFrom(newUser);
+				registerData.setType("register");
+				System.out.println(registerData);
+				//使用序列化将信息传给服务器
+				try {
+					out.writeObject(registerData);
+					out.flush();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("传送给服务器");
+				//服务器回馈信息
+				try {
+					MessageBox received=(MessageBox)RegisterFrame.this.in.readObject();
+					JOptionPane.showMessageDialog(RegisterFrame.this, (received.getContent().equals("true"))?"注册成功":"注册失败");
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+			}
+		});
+		button.setBounds(108, 380, 93, 23);
 		contentPane.add(button);
+		
+		JButton button_1 = new JButton("登陆");
+		button_1.setBounds(308, 380, 93, 23);
+		button_1.setEnabled(false);
+		button_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		contentPane.add(button_1);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(94, 240, 374, 94);
 		contentPane.add(scrollPane);
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea("什么都没有");
 		scrollPane.setViewportView(textArea);
 		
 	} 
-
-	public static void main(String[] args) {
-		new RegisterFrame();
-	}
-
 
 }

@@ -16,9 +16,12 @@ import com.abc.timelycommunication.model.User;
 public class DataOperate {
 	//注册
 	public static boolean register(User user) {
+		System.out.println(user);
 		File data=new File("database/"+user.getUsername()+".data");
-		if(data.exists())
+		if(data.exists()) {
+			System.out.println("用户信息已存在");
 		return false;
+		}
 		return updateInformation(user);
 	}
 	//修改个人信息
@@ -45,7 +48,7 @@ public class DataOperate {
 				ObjectInputStream  in=new ObjectInputStream(new FileInputStream("database/"+username+".data"));
 				User user=(User)in.readObject();
 				
-				System.out.println(user);
+				System.out.println("DataOperate"+user);
 				if(password.equals(user.getPassword())&&username.equals(user.getUsername())) {
 					return user;
 				}else {

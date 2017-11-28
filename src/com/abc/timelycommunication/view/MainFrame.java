@@ -118,6 +118,7 @@ public class MainFrame extends JFrame {
 		DefaultMutableTreeNode  root=new DefaultMutableTreeNode("root");
 		Map<String,HashSet<User>> allfriends=user.getFriends();
 		//set集合获取所有分组名
+		if(allfriends!=null) {
 		Set<String> allgroupsname=allfriends.keySet();
 		for(String groupname:allgroupsname) {
 			//每个好友分组的节点
@@ -130,7 +131,7 @@ public class MainFrame extends JFrame {
 			}
 			root.add(group);
 		}
-		
+		}
 		tree = new JTree(root);
 		tree.addMouseListener(new MainFrameListener(MainFrame.this));
 		JScrollPane scrollPane= new JScrollPane(tree);

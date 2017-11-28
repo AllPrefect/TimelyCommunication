@@ -71,7 +71,8 @@ public class LoginFrame extends JFrame {
 		JLabel1.setSize(30,20);
 		this.add(JLabel1);
 		
-		username=new JComboBox(new Object[] {"¹·µ°"});
+		username=new JComboBox(new Object[] {"¹·µ°","´ó¹·×Ó"});
+		username.setEditable(true);
 		username.setSize(150,20);
 		username.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		username.setLocation(95,165);

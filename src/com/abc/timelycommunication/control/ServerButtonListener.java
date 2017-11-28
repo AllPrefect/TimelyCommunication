@@ -56,13 +56,16 @@ public class ServerButtonListener implements ActionListener {
 					ObjectInputStream in=new ObjectInputStream(server.getInputStream());
 					MessageBox m=(MessageBox)in.readObject();
 					
-					System.out.println(m);
+					System.out.println("serverButtonlistener"+m);
 					serverframe.getTextArea().append(new Date().toLocaleString()+":\t客户端["+m.getFrom().getUsername()+"]l连接进来了!\r\n");
+					
 					if(m.getType().equals("login")) {
 						System.out.println("进入检查登陆信息");
 						DetermineLoginInformation(m);
+					}else if(m.getType().equals("register")){
+						System.out.println("进入验证注册信息");
+						DetermineRegisterInformation(m);
 					}
-				
 			}
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -87,6 +90,28 @@ public class ServerButtonListener implements ActionListener {
 			out.writeObject(loginResult);
 			out.flush();
 		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 处理注册信息
+	 * @param m
+	 */
+	public void DetermineRegisterInformation(MessageBox m) {
+		System.out.println(m);
+		
+		User registereduser=m.getFrom();
+		Boolean registeredresult=DataOperate.register(registereduser);
+		System.out.println(registeredresult);
+		
+		MessageBox result=new MessageBox();
+		result.setContent(registeredresult.toString());
+		result.setType("registeredResult");
+		try {
+			out.writeObject(result);
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

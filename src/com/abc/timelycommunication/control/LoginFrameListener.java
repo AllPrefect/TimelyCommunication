@@ -35,7 +35,7 @@ public class LoginFrameListener implements MouseListener {
 	
 			 //表单验证
 			 String yourInputUsername=loginframe.getUsername().getSelectedItem().toString().trim();
-			 String yourInputPassword=loginframe.getPassword().getText().toString().trim();
+			 String yourInputPassword=loginframe.getPassword().getText().toString();
 			 //trim是String类的方法，去字符串的前后空白符
 			 if(yourInputUsername.length()<1) {
 				JOptionPane.showMessageDialog(loginframe, "用户名长度不够!","温馨提示",JOptionPane.ERROR_MESSAGE);
@@ -67,16 +67,16 @@ public class LoginFrameListener implements MouseListener {
 					loginMessage.setFrom(willLoginUser);
 					loginMessage.setType("login"); 
 					
-					System.out.println(loginMessage);
+					System.out.println("loginlistener"+loginMessage);
 					out.writeObject(loginMessage);
 					out.flush();
 				//读取服务器回发的登陆结果消息
-					MessageBox  result=(MessageBox)in.readObject();
-					if(result.getFrom()==null) {
+					MessageBox  loginresult=(MessageBox)in.readObject();
+					if(loginresult.getFrom()==null) {
 						JOptionPane.showMessageDialog(loginframe, "登陆失败,请检查用户名和密码!","温馨提示",JOptionPane.ERROR_MESSAGE);
 					}else
 					{
-						User u=result.getFrom();
+						User u=loginresult.getFrom();
 						MainFrame  m=new MainFrame(u);
 						m.setVisible(true);
 						loginframe.setVisible(false);
@@ -88,7 +88,18 @@ public class LoginFrameListener implements MouseListener {
 			 }
 		}
 		if(e.getSource()==loginframe.getRegister()) {
-			new RegisterFrame();
+			try {
+				 if(client==null) {
+					 client=new Socket(Config.serverIP,Config.port);
+					 out=new ObjectOutputStream(client.getOutputStream());
+					 in=new ObjectInputStream(client.getInputStream());
+					 new RegisterFrame(out,in);
+					 loginframe.setVisible(false);
+				 }
+			 }catch(Exception e1) {
+				 e1.printStackTrace();
+				 JOptionPane.showMessageDialog(loginframe, "无法连接服务器，请检查网络!","温馨提示",JOptionPane.ERROR_MESSAGE);
+			 }
 		}
 	}
 	@Override
