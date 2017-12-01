@@ -151,11 +151,32 @@ public class RegisterFrame extends JFrame{
 		
 		JButton button_1 = new JButton("µÇÂ½");
 		button_1.setBounds(308, 380, 93, 23);
-		button_1.setEnabled(false);
+		button_1.setEnabled(true);
 		button_1.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String username=textField_1.getText();
+				String password=passwordField.getText();
+				MessageBox  loginMessage=new MessageBox();
+				User willLoginUser=new User(username,password);
+				loginMessage.setFrom(willLoginUser);
+				loginMessage.setType("login");
+				try {
+					out.writeObject(loginMessage);
+					out.flush();
+					MessageBox  loginresult=(MessageBox)in.readObject();
+					if(loginresult.getFrom()==null) {
+					JOptionPane.showMessageDialog(RegisterFrame.this, "ÇëÏÈ½øÐÐ×¢²á£¡");	
+					}else {
+					User u=loginresult.getFrom();
+					MainFrame  m=new MainFrame(u,out,in);
+					m.setVisible(true);
+					RegisterFrame.this.setVisible(false);
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 				
 			}
 		});

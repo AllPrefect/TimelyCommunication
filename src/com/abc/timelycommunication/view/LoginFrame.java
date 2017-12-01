@@ -21,13 +21,11 @@ import com.abc.timelycommunication.control.Client;
 import com.abc.timelycommunication.control.LoginFrameListener;
 
 public class LoginFrame extends JFrame {
-	private Client c;//客户端对象
 	
 	private JLabel headImage,JLabel1,JLabel2;
-	private JComboBox username;
+	private JComboBox account;
 	private JPasswordField password;
 	private JButton login,register; 
-	
 	
 	public JButton getLogin() {
 		return login;
@@ -35,12 +33,11 @@ public class LoginFrame extends JFrame {
 	public JButton getRegister() {
 		return register;
 	}
-	
 	public JPasswordField getPassword() {
 		return password;
 	}
-	public JComboBox getUsername() {
-		return username;
+	public JComboBox getAccount() {
+		return account;
 	}
 	
 	public LoginFrame() {
@@ -71,18 +68,12 @@ public class LoginFrame extends JFrame {
 		JLabel1.setSize(30,20);
 		this.add(JLabel1);
 		
-		username=new JComboBox(new Object[] {"狗蛋","大狗子"});
-		username.setEditable(true);
-		username.setSize(150,20);
-		username.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		username.setLocation(95,165);
-		username.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		this.add(username);
+		account=new JComboBox(new Object[] {"666666","999999"});
+		account.setEditable(true);
+		account.setSize(150,20);
+		account.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		account.setLocation(95,165);
+		this.add(account);
 		
 		JLabel2=new JLabel("密码");
 		JLabel2.setLocation(60,195);
@@ -112,7 +103,6 @@ public class LoginFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		new LoginFrame();
 	}
 

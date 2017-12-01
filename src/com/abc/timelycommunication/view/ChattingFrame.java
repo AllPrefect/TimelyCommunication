@@ -1,59 +1,45 @@
 package com.abc.timelycommunication.view;
 
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Date;
-
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
-
-import com.abc.timelycommunication.control.ChatRecordHelper;
+import com.abc.timelycommunication.control.ChattingFrameListener;
+import com.abc.timelycommunication.model.User;
 
 public class ChattingFrame extends JFrame {
-	private JButton btnNewButton;
+	private JButton btnNewButton,btnNewButton_1,btnNewButton_2;
 	private JPanel contentPane;
 	private JTextArea textArea,textArea_1;
-	private ChatRecordHelper  record;//
-	private ChattingFrameActionListener  lisenter;//
+	private ChattingFrameListener  lisenter;//
 	
 	public JButton getBtnNewButton() {
 		return btnNewButton;
 	}
-
-	public void setBtnNewButton(JButton btnNewButton) {
-		this.btnNewButton = btnNewButton;
+	public JButton getBtnNewButton_1() {
+		return btnNewButton_1;
+	}
+	public JButton getBtnNewButton_2() {
+		return btnNewButton_2;
 	}
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ChattingFrame frame = new ChattingFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	public JTextArea getTextArea() {
+		return textArea;
 	}
-
+	public JTextArea getTextArea_1() {
+		return textArea_1;
+	}
 	/**
 	 * Create the frame.
 	 */
-	public ChattingFrame() {
-		record=new ChatRecordHelper();
-		lisenter=new ChattingFrameActionListener();
-		/**
-		 * 
-		 */
+	public ChattingFrame(User my,User your,ObjectOutputStream  out,ObjectInputStream  in) {
+		
+		lisenter=new ChattingFrameListener(ChattingFrame.this,my,your,out,in);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 529, 465);
 		contentPane = new JPanel();
@@ -61,15 +47,12 @@ public class ChattingFrame extends JFrame {
 		setContentPane(contentPane);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 10, 488, 221);
+		scrollPane.setBounds(10, 10, 488, 235);
 		
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		scrollPane.setViewportView(textArea);
-		
-		JPanel panel = new JPanel();
-		panel.setBounds(10, 237, 488, 33);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(10, 280, 488, 108);
@@ -77,33 +60,66 @@ public class ChattingFrame extends JFrame {
 		btnNewButton = new JButton("\u53D1\u9001");
 		btnNewButton.addActionListener(lisenter);
 		btnNewButton.setBounds(429, 398, 69, 23);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		contentPane.setLayout(null);
+		
+		btnNewButton_1 = new JButton("¶¶¶¯");
+		btnNewButton_1.addActionListener(lisenter);
+		btnNewButton_1.setBounds(10, 250, 69, 23);
+		
+		btnNewButton_2 = new JButton("");
+		btnNewButton_2.addActionListener(lisenter);
+		btnNewButton_2.setBounds(90, 250, 69, 23);
 		
 		textArea_1 = new JTextArea();
 		textArea_1.setLineWrap(true);
 		scrollPane_1.setViewportView(textArea_1);
-		contentPane.add(scrollPane_1);
-		contentPane.add(panel);
-		contentPane.add(scrollPane);
 		contentPane.add(btnNewButton);
-	}
-	
-private class ChattingFrameActionListener implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getSource()==btnNewButton) {
-				String  willSendMessage=textArea_1.getText();
-				record.writeMessageToRecord(willSendMessage);
-				textArea.append(textArea.getText()+(textArea.getText().length()!=0?"\r\n":"")+new Date().toLocaleString()+": "+willSendMessage);
-				textArea_1.setText("");
-			}
-		}
+		contentPane.add(btnNewButton_1);
+		contentPane.add(btnNewButton_2);
+		contentPane.add(scrollPane_1);
+		contentPane.add(scrollPane);
+		
 		
 	}
+	public void  shakeWindow() {
+		new Thread() {
+			public void run() {
+				int waitTime=50;
+				int lastX=ChattingFrame.this.getX();
+				int lasty=ChattingFrame.this.getY();
+				for(int n=0;n<10;n++)
+				{
+					ChattingFrame.this.setLocation(lastX+3, lasty);
+					try {
+						Thread.sleep(waitTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					ChattingFrame.this.setLocation(lastX, lasty+3);
+					try {
+						Thread.sleep(waitTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					ChattingFrame.this.setLocation(lastX-3, lasty);
+					try {
+						Thread.sleep(waitTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					ChattingFrame.this.setLocation(lastX, lasty-3);
+					try {
+						Thread.sleep(waitTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+				}
+				ChattingFrame.this.setLocation(lastX, lasty);
+			};
+			
+		}.start();
+	}
+	
+	
 }

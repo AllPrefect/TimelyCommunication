@@ -8,25 +8,27 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.abc.timelycommunication.model.MessageBox;
 import com.abc.timelycommunication.model.User;
-import com.abc.timelycommunication.view.LoginFrame;
 import com.abc.timelycommunication.view.ServerFrame;
 
-public class ServerButtonListener implements ActionListener {
+public class ServerFrameListener implements ActionListener {
 	private ServerSocket  s;
 	private Socket server;
 	private ServerFrame serverframe;
-	
-	public ServerButtonListener(ServerFrame serverframe) {
+	//保存每个登陆账号、对应的输出流
+	private Map<String,ObjectOutputStream> allClient=new HashMap<>();
+	public ServerFrameListener(ServerFrame serverframe) {
 		this.serverframe=serverframe;
 	}
 	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//点击启动服务器
+		//点击启动服务器按钮
 		if(e.getSource()==serverframe.getBtnNewButton()) {
 			try {
 				s=new ServerSocket(Config.port);
@@ -38,26 +40,36 @@ public class ServerButtonListener implements ActionListener {
 				e1.printStackTrace();
 			}
 		}
+		
+		//点击关闭服务器按钮
 		if(e.getSource()==serverframe.getBtnNewButton_1()) {
-			System.out.println("关闭");
-		
-		
+			try {
+				server.close();
+				s.close();
+				serverframe.getBtnNewButton().setEnabled(true);
+				serverframe.getBtnNewButton_1().setEnabled(false);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
 		}
 	}
+	/**
+	 * 处理服务端与客户端的通信
+	 * @author user
+	 *
+	 */
 	class ClientMessageReciveThread extends Thread {
 		private ObjectOutputStream out;
+		private ObjectInputStream in;
 		public void run() {
 			try {
 				while(true) {
 					server=s.accept();
-					System.out.println(server.getInetAddress());
-					
 					out=new ObjectOutputStream(server.getOutputStream());
-					ObjectInputStream in=new ObjectInputStream(server.getInputStream());
+					in=new ObjectInputStream(server.getInputStream());
 					MessageBox m=(MessageBox)in.readObject();
-					
-					System.out.println("serverButtonlistener"+m);
-					serverframe.getTextArea().append(new Date().toLocaleString()+":\t客户端["+m.getFrom().getUsername()+"]l连接进来了!\r\n");
+					serverframe.getTextArea().append(new Date().toLocaleString()+":\t客户端["+server.getInetAddress()+"]l连接进来了!\r\n");
 					
 					if(m.getType().equals("login")) {
 						System.out.println("进入检查登陆信息");
@@ -65,26 +77,29 @@ public class ServerButtonListener implements ActionListener {
 					}else if(m.getType().equals("register")){
 						System.out.println("进入验证注册信息");
 						DetermineRegisterInformation(m);
+					}else if(m.getType().equals("textMessage")) {
+						System.out.println("进入消息转发");
+						TransmitTextMessage(m);
 					}
 			}
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
-	
+		
 	/**
 	 * 验证登陆信息
 	 * @param m
 	 */
 	public void DetermineLoginInformation(MessageBox m) {
-		
-		System.out.println(m.getFrom().getUsername());
-		System.out.println(m.getFrom().getPassword());
-		User loginedUser=DataOperate.login(m.getFrom().getUsername(), m.getFrom().getPassword());
-		
-		System.out.println(loginedUser);
+		User loginedUser=DataOperate.login(m.getFrom().getAccount(), m.getFrom().getPassword());
+		if(loginedUser!=null) {
+			allClient.put(loginedUser.getAccount(), out);
+			serverframe.getTextArea().append(new Date().toLocaleString()+":\t客户端["+loginedUser.getUsername()+"]l连接进来了!\r\n");
+		}
 		MessageBox loginResult=new MessageBox();
-		loginResult.setFrom(loginedUser);//将账户密码传给MessageBox类的from属性
+		//将账户密码传给MessageBox类的from属性
+		loginResult.setFrom(loginedUser);
 		loginResult.setType("loginResult");
 		try {
 			out.writeObject(loginResult);
@@ -111,9 +126,30 @@ public class ServerButtonListener implements ActionListener {
 			out.writeObject(result);
 			out.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 *转发聊天文本消息
+	 * @param m
+	 */
+	public void TransmitTextMessage(MessageBox m) {
+		//遍历集合，找到消息接收方对应的输出流
+		for(String account:allClient.keySet()) {
+			if(account.equals(m.getTo().getAccount())) {
+				System.out.println(m);
+				//m.setTime(new Date().toLocaleString());
+				try {
+					allClient.get(account).writeObject(m);
+					allClient.get(account).flush();
+				}catch(IOException E) {
+					E.printStackTrace();
+				}
+				break;
+			}
+		}
+	}
+	
 	}
 }

@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.abc.timelycommunication.control.Server;
-import com.abc.timelycommunication.control.ServerButtonListener;
+import com.abc.timelycommunication.control.ServerFrameListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -81,7 +81,7 @@ public class ServerFrame extends JFrame {
 		
 		btnNewButton = new JButton("\u5F00\u542F\u670D\u52A1\u7AEF");
 		btnNewButton.setBounds(66, 283, 113, 23);
-		btnNewButton.addActionListener(new ServerButtonListener(ServerFrame.this));
+		btnNewButton.addActionListener(new ServerFrameListener(ServerFrame.this));
 		//调用Server类的监听器
 		/*
 		btnNewButton.addActionListener(new ActionListener() {
@@ -103,7 +103,7 @@ public class ServerFrame extends JFrame {
 		
 		btnNewButton_1 = new JButton("\u5173\u95ED\u670D\u52A1\u7AEF");
 		btnNewButton_1.setBounds(243, 283, 113, 23);
-		btnNewButton_1.addActionListener(new ServerButtonListener(ServerFrame.this));
+		btnNewButton_1.addActionListener(new ServerFrameListener(ServerFrame.this));
 		/*
 		btnNewButton_1.addActionListener(new ActionListener() {
 			@Override

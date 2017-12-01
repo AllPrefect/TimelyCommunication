@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Map;
 
-public class User implements Serializable{//实现序列化需要先继承Serializable接口
+//实现序列化需要先继承Serializable接口
+public class User implements Serializable{
 	private String account;//账户
 	private String username;//昵称
 	private String password;//密码
@@ -71,14 +72,12 @@ public class User implements Serializable{//实现序列化需要先继承Serializable接口
 		this.instruction = instruction;
 		/*this.friends = friends;*/
 	}
+	public User(String account, String password) {
+		super();
+		this.account = account;
+		this.password = password;
+	}
 	public User() {
 		super();
 	}
-	public User(String username, String password) {
-		super();
-		this.username = username;
-		this.password = password;
-	}
-	
-	
 }
