@@ -1,17 +1,19 @@
 package com.abc.timelycommunication.view;
 
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,6 +34,8 @@ public class RegisterFrame extends JFrame{
 	private JTextArea textArea;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	private User newUser;
+	private String pathName;//头像路径
 	public RegisterFrame(ObjectOutputStream out,ObjectInputStream in) {
 		this.out=out;
 		this.in=in;
@@ -87,6 +91,21 @@ public class RegisterFrame extends JFrame{
 		lblNewLabel_2.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage("resource/avatar/1.jpg").getScaledInstance(106, 145, Image.SCALE_DEFAULT)));
 		contentPane.add(lblNewLabel_2);
 		
+		JComboBox comboBox = new JComboBox();
+		for(int n=1;n<9;n++)
+		{
+			comboBox.addItem(n+".jpg");
+		}
+		comboBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				RegisterFrame.this.pathName="resource/avatar/"+e.getItem().toString();
+				lblNewLabel_2.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(pathName).getScaledInstance(106, 145, Image.SCALE_DEFAULT)));
+			}
+		});
+		comboBox.setBounds(345, 185, 90, 20);
+		contentPane.add(comboBox);
+		
 		JLabel label_2 = new JLabel("\u5907   \u6CE8\uFF1A");
 		label_2.setFont(new Font("宋体", Font.PLAIN, 13));
 		label_2.setBounds(30, 230, 65, 25);
@@ -109,18 +128,20 @@ public class RegisterFrame extends JFrame{
 		button.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
+				new Thread() {
+					public void run() {
 			//提取注册界面上的信息
 			String account=textField.getText().trim();
 			String username=textField_1.getText();
 			String sex=radioButton.isSelected()?"男":"女";
 			String password=passwordField.getText();
 			String passwordagain=passwordField_1.getText();
-			String touxiang="null";
+			String touxiang=pathName;
 			String instruction=textArea.getText().toString();
 			if(!password.equals(passwordagain)) {
 				JOptionPane.showMessageDialog(RegisterFrame.this,"两次输入密码不一致","温馨提示", JOptionPane.ERROR_MESSAGE);
 			}else {
-				User newUser=new User(account,username,password,sex,touxiang,instruction);
+				newUser=new User(account,username,password,sex,touxiang,instruction);
 				MessageBox registerData=new MessageBox();
 				registerData.setFrom(newUser);
 				registerData.setType("register");
@@ -145,39 +166,22 @@ public class RegisterFrame extends JFrame{
 				
 			}
 			}
+				}.start();
+			}
 		});
 		button.setBounds(108, 380, 93, 23);
 		contentPane.add(button);
 		
-		JButton button_1 = new JButton("登陆");
+		button_1 = new JButton("登陆");
 		button_1.setBounds(308, 380, 93, 23);
 		button_1.setEnabled(true);
 		button_1.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String username=textField_1.getText();
-				String password=passwordField.getText();
-				MessageBox  loginMessage=new MessageBox();
-				User willLoginUser=new User(username,password);
-				loginMessage.setFrom(willLoginUser);
-				loginMessage.setType("login");
-				try {
-					out.writeObject(loginMessage);
-					out.flush();
-					MessageBox  loginresult=(MessageBox)in.readObject();
-					if(loginresult.getFrom()==null) {
-					JOptionPane.showMessageDialog(RegisterFrame.this, "请先进行注册！");	
-					}else {
-					User u=loginresult.getFrom();
-					MainFrame  m=new MainFrame(u,out,in);
-					m.setVisible(true);
-					RegisterFrame.this.setVisible(false);
-					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				
+				MainFrame  m=new MainFrame(newUser,in,out);
+				m.setVisible(true);
+				RegisterFrame.this.setVisible(false);
 			}
 		});
 		contentPane.add(button_1);

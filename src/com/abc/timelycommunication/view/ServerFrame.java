@@ -62,7 +62,7 @@ public class ServerFrame extends JFrame {
 		
 		setTitle("服务器端");
 		setResizable(false);//随意改变窗口大小
-		setIconImage(Toolkit.getDefaultToolkit().createImage("resource/pictures/logo.jpg"));
+		setIconImage(Toolkit.getDefaultToolkit().createImage("resource/pictures/server.jpg"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 456, 428);
 		contentPane = new JPanel();
@@ -103,6 +103,7 @@ public class ServerFrame extends JFrame {
 		
 		btnNewButton_1 = new JButton("\u5173\u95ED\u670D\u52A1\u7AEF");
 		btnNewButton_1.setBounds(243, 283, 113, 23);
+		btnNewButton_1.setEnabled(false);
 		btnNewButton_1.addActionListener(new ServerFrameListener(ServerFrame.this));
 		/*
 		btnNewButton_1.addActionListener(new ActionListener() {

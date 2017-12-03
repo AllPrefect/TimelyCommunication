@@ -15,7 +15,6 @@ public class ChatRecordHelper {
 			try {
 				recordFiles.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -29,7 +28,6 @@ public class ChatRecordHelper {
 		try {
 			out.write(message.getBytes());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

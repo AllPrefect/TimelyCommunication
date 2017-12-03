@@ -1,5 +1,6 @@
 package com.abc.timelycommunication.control;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.Date;
 import com.abc.timelycommunication.model.MessageBox;
 import com.abc.timelycommunication.model.User;
 import com.abc.timelycommunication.view.ChattingFrame;
+import com.abc.timelycommunication.view.MainFrame;
 
 public class ChattingFrameListener implements ActionListener{
 	private ChatRecordHelper  record;//
@@ -16,7 +18,7 @@ public class ChattingFrameListener implements ActionListener{
 	private ObjectOutputStream  out;
 	private ObjectInputStream  in;
 	private User my,your;
-	public ChattingFrameListener(ChattingFrame chattingframe,User my,User your,ObjectOutputStream  out,ObjectInputStream  in) {
+	public ChattingFrameListener(ChattingFrame chattingframe,User my,User your,ObjectInputStream  in,ObjectOutputStream  out) {
 		this.chattingframe=chattingframe;
 		this.my=my;
 		this.your=your;
@@ -37,13 +39,12 @@ public class ChattingFrameListener implements ActionListener{
 			try {
 				out.writeObject(send);
 				out.flush();
-				System.out.println(send);
 			}catch(IOException e1) {
 				e1.printStackTrace();
 			}
 			String nowTime=new Date().toLocaleString();
 			chattingframe.getTextArea().append(my.getUsername()+" : ["+nowTime+"]\t");
-			record.writeMessageToRecord(willSendMessage);
+			record.writeMessageToRecord(my.getUsername()+" : ["+nowTime+"]\t\r\n"+willSendMessage+"\r\n");
 			chattingframe.getTextArea().append((chattingframe.getTextArea().getText().length()!=0?"\r\n":"")+willSendMessage+"\r\n");
 			chattingframe.getTextArea_1().setText("");
 		}
@@ -52,7 +53,15 @@ public class ChattingFrameListener implements ActionListener{
 			MessageBox  m=new MessageBox();
 			m.setFrom(my);
 			m.setTo(your);
-			m.setType("shakeMessage");
+			m.setContent("shakeMessage");
+			m.setType("textMessage");
+			try {
+				out.writeObject(m);
+				out.flush();
+				System.out.println(m);
+			}catch(IOException e1) {
+				e1.printStackTrace();
+			}
 			shakeWindow();
 		}
 	}

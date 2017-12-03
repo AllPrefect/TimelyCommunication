@@ -3,6 +3,7 @@ package com.abc.timelycommunication.control;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -18,7 +19,6 @@ public class LoginFrameListener implements MouseListener {
 	private Socket  client;
 	private ObjectOutputStream  out;
 	private  ObjectInputStream  in;
-	
 	private LoginFrame loginframe;
 	public LoginFrameListener(LoginFrame loginframe) {
 		this.loginframe=loginframe;
@@ -62,7 +62,7 @@ public class LoginFrameListener implements MouseListener {
 						 JOptionPane.showMessageDialog(loginframe, "无法连接服务器，请检查网络!","温馨提示",JOptionPane.ERROR_MESSAGE);
 					 }
 			 /**
-			  * 用输出流将消息发送给服务器，让服务器校验我们的账号和密码是否成功
+			  * 用输出流将消息发送给服务器，检验账号密码
 			  */
 				 try {
 					 //消息要封装成对象类型，所以要传递消息要用Object流
@@ -83,7 +83,7 @@ public class LoginFrameListener implements MouseListener {
 					}else{
 						User u=loginresult.getFrom();
 						//同时将输入输出流传给MainFrame类
-						MainFrame  m=new MainFrame(u,out,in);
+						MainFrame  m=new MainFrame(u,in,out);
 						m.setVisible(true);
 						loginframe.setVisible(false);
 					}

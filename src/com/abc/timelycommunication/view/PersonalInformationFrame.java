@@ -1,27 +1,33 @@
 package com.abc.timelycommunication.view;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.abc.timelycommunication.model.MessageBox;
+import com.abc.timelycommunication.model.User;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JTextArea;
-/**
- * 无法新建对象调用
- * @author user
- *
- */
+
 public class PersonalInformationFrame extends JFrame {
 
 	private JPanel contentPane;
@@ -31,35 +37,27 @@ public class PersonalInformationFrame extends JFrame {
 	private JPasswordField passwordField_1;
 	private JLabel label_2;
 	private JLabel label_3;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PersonalInformationFrame frame = new PersonalInformationFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	private String pathName;
+	private User user;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
 	/**
 	 * Create the frame.
 	 */
-	public PersonalInformationFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public PersonalInformationFrame(User user,ObjectOutputStream out,ObjectInputStream in) {
+		this.user=user;
+		this.out=out;
+		this.in=in;
+		
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 517, 479);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textField = new JTextField();
+		textField = new JTextField(user.getAccount());
 		textField.setBounds(95, 30, 170, 28);
 		contentPane.add(textField);
 		textField.setColumns(10);
@@ -74,7 +72,7 @@ public class PersonalInformationFrame extends JFrame {
 		label.setBounds(30, 72, 65, 25);
 		contentPane.add(label);
 		
-		textField_1 = new JTextField();
+		textField_1 = new JTextField(user.getUsername());
 		textField_1.setColumns(10);
 		textField_1.setBounds(95, 70, 170, 28);
 		contentPane.add(textField_1);
@@ -84,7 +82,7 @@ public class PersonalInformationFrame extends JFrame {
 		label_1.setBounds(30, 152, 65, 25);
 		contentPane.add(label_1);
 		
-		passwordField = new JPasswordField();
+		passwordField = new JPasswordField(user.getPassword());
 		passwordField.setBounds(95, 150, 170, 28);
 		contentPane.add(passwordField);
 		
@@ -93,14 +91,29 @@ public class PersonalInformationFrame extends JFrame {
 		lblNewLabel_1.setBounds(30, 192, 65, 25);
 		contentPane.add(lblNewLabel_1);
 		
-		passwordField_1 = new JPasswordField();
+		passwordField_1 = new JPasswordField(user.getPassword());
 		passwordField_1.setBounds(95, 190, 170, 28);
 		contentPane.add(passwordField_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("\u5934\u50CF");
 		lblNewLabel_2.setBounds(341, 31, 106, 145);
-		lblNewLabel_2.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage("resource/avatar/1.jpg").getScaledInstance(106, 145, Image.SCALE_DEFAULT)));
+		lblNewLabel_2.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(user.getImagepath()).getScaledInstance(106, 145, Image.SCALE_DEFAULT)));
 		contentPane.add(lblNewLabel_2);
+		
+		JComboBox comboBox = new JComboBox();
+		for(int n=1;n<9;n++)
+		{
+			comboBox.addItem(n+".jpg");
+		}
+		comboBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				PersonalInformationFrame.this.pathName="resource/avatar/"+e.getItem().toString();
+				lblNewLabel_2.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(pathName).getScaledInstance(106, 145, Image.SCALE_DEFAULT)));
+			}
+		});
+		comboBox.setBounds(345, 185, 90, 20);
+		contentPane.add(comboBox);
 		
 		label_2 = new JLabel("\u5907   \u6CE8\uFF1A");
 		label_2.setFont(new Font("宋体", Font.PLAIN, 13));
@@ -113,26 +126,66 @@ public class PersonalInformationFrame extends JFrame {
 		contentPane.add(label_3);
 		
 		JRadioButton radioButton = new JRadioButton("\u7537");
+		if(user.getSex().equals("男")) {
+			radioButton.setSelected(true);
+		}
 		radioButton.setBounds(108, 114, 60, 20);
 		contentPane.add(radioButton);
 		
 		JRadioButton radioButton_1 = new JRadioButton("\u5973");
+		if(user.getSex().equals("女")) {
+			radioButton.setSelected(true);
+		}
 		radioButton_1.setBounds(182, 114, 60, 20);
 		contentPane.add(radioButton_1);
-		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(139, 380, 93, 23);
-		contentPane.add(btnNewButton);
-		
-		JButton button = new JButton("\u786E\u8BA4");
-		button.setBounds(308, 380, 93, 23);
-		contentPane.add(button);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(94, 240, 374, 94);
 		contentPane.add(scrollPane);
 		
-		JTextArea textArea = new JTextArea();
+		JTextArea textArea = new JTextArea(user.getInstruction());
 		scrollPane.setViewportView(textArea);
+		
+		JButton button = new JButton("\u786E\u8BA4");
+		button.setBounds(390, 380, 60, 23);
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String account=textField.getText().trim();
+				String username=textField_1.getText();
+				String sex=radioButton.isSelected()?"男":"女";
+				String password=passwordField.getText();
+				String passwordagain=passwordField_1.getText();
+				String touxiang=pathName;
+				String instruction=textArea.getText().toString();
+			
+				if(!password.equals(passwordagain)) {
+					JOptionPane.showMessageDialog(PersonalInformationFrame.this,"两次输入密码不一致","温馨提示", JOptionPane.ERROR_MESSAGE);
+				}else {
+					User updateUser=new User(account,username,password,sex,touxiang,instruction);
+					MessageBox updateData=new MessageBox();
+					updateData.setFrom(updateUser);
+					updateData.setType("update");
+					System.out.println(updateData);
+					//使用序列化将信息传给服务器
+					try {
+						out.writeObject(updateData);
+						out.flush();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					System.out.println("传送给服务器");
+					//服务器回馈信息
+					try {
+						MessageBox received=(MessageBox)PersonalInformationFrame.this.in.readObject();
+						JOptionPane.showMessageDialog(PersonalInformationFrame.this, (received.getContent().equals("true"))?"修改成功":"修改失败");
+					} catch (ClassNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		contentPane.add(button);
 	}
 }

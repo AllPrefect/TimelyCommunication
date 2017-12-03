@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -68,11 +70,20 @@ public class LoginFrame extends JFrame {
 		JLabel1.setSize(30,20);
 		this.add(JLabel1);
 		
-		account=new JComboBox(new Object[] {"666666","999999"});
+		account=new JComboBox(new Object[] {"666666","111111","999999",""});
 		account.setEditable(true);
 		account.setSize(150,20);
 		account.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		account.setLocation(95,165);
+		account.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent e) {
+				
+			}
+			public void focusGained(FocusEvent e) {
+					account.setSelectedItem("");
+					account.setToolTipText("123");
+			}
+		});
 		this.add(account);
 		
 		JLabel2=new JLabel("√‹¬Î");
@@ -84,6 +95,19 @@ public class LoginFrame extends JFrame {
 		password.setSize(150,20);
 		password.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		password.setLocation(95,195);
+		password.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(password.getText().length()==0)
+					password.setText("666666");
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+					password.setText("");
+			}
+		});
 		this.add(password);
 		
 		

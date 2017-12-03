@@ -1,18 +1,23 @@
 package com.abc.timelycommunication.view;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,12 +29,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-
 import com.abc.timelycommunication.control.MainFrameListener;
+import com.abc.timelycommunication.control.MainFrameListener.MessageReceiveThread;
 import com.abc.timelycommunication.model.MessageBox;
 import com.abc.timelycommunication.model.User;
 
 public class MainFrame extends JFrame {
+	//记录正在聊天的好友账号、聊天窗口对象
+	private static Map<String,ChattingFrame> allFrames=new HashMap<>();
 	private MainFrameListener mianframelistener;
 	private JTree tree;
 	private JLabel headPicture,headportrait,username;
@@ -37,9 +44,17 @@ public class MainFrame extends JFrame {
 	private JButton searchButton;
 	//接收登陆界面传来的用户对象
 	private User user;
+	private ObjectInputStream  in;
 	private ObjectOutputStream  out;
-	private  ObjectInputStream  in;
+	private SystemTray sysTray;
+	private TrayIcon icon;
 	
+	public SystemTray getSysTray() {
+		return sysTray;
+	}
+	public TrayIcon getIcon() {
+		return icon;
+	}
 	public JLabel getHeadportrait() {
 		return headportrait;
 	}
@@ -52,11 +67,14 @@ public class MainFrame extends JFrame {
 	public JTree getTree() {
 		return tree;
 	}
-	public MainFrame(User user,ObjectOutputStream out,ObjectInputStream in) {
-		
-		this.user=user;
-		this.out=out;
+	
+	public static Map<String, ChattingFrame> getAllFrames() {
+		return allFrames;
+	}
+	public MainFrame(User user,ObjectInputStream in,ObjectOutputStream out) {
 		this.in=in;
+		this.out=out;
+		this.user=user;
 		
 		setSize(300, 600);
 		setVisible(true);
@@ -69,9 +87,32 @@ public class MainFrame extends JFrame {
 		homeCompoment();
 		paintComponents(getGraphics());
 		paintAll(getGraphics());
+		
+		/**
+		 *任务栏图标
+		 */
+		//可以对操作系统任务栏操作的java对象
+		sysTray=SystemTray.getSystemTray();
+		icon=new TrayIcon(Toolkit.getDefaultToolkit().createImage("resource/pictures/logo.jpg"));
+		icon.setImageAutoSize(true);
+		try {
+			sysTray.add(icon);
+		} catch (AWTException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		icon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton()==1) {
+					
+				}
+			}
+		});
 	}
 	public void homeCompoment() {
-		mianframelistener=new MainFrameListener(MainFrame.this,user,out,in);
+		mianframelistener=new MainFrameListener(MainFrame.this,user,in,out);
 		
 		headPicture=new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().createImage("resource/pictures/mainframe.gif")));
 		headPicture.setSize(300,125);
@@ -152,8 +193,8 @@ public class MainFrame extends JFrame {
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("群组", null, panel_2, null);
 		//时刻接收服务器传来的消息
-		mianframelistener.new MessageReceiveThread().start();
-		
+		MessageReceiveThread t=new MainFrameListener(MainFrame.this,user,in,out).new MessageReceiveThread();
+		t.start();
 		
 	}
 	

@@ -26,7 +26,6 @@ public class ChattingFrame extends JFrame {
 	public JButton getBtnNewButton_2() {
 		return btnNewButton_2;
 	}
-
 	public JTextArea getTextArea() {
 		return textArea;
 	}
@@ -36,11 +35,12 @@ public class ChattingFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ChattingFrame(User my,User your,ObjectOutputStream  out,ObjectInputStream  in) {
+	public ChattingFrame(User my,User your,ObjectInputStream  in,ObjectOutputStream  out) {
 		
-		lisenter=new ChattingFrameListener(ChattingFrame.this,my,your,out,in);
+		lisenter=new ChattingFrameListener(ChattingFrame.this,my,your,in,out);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setTitle("”Î["+your.getUsername()+"]¡ƒÃÏ÷–...");
 		setBounds(100, 100, 529, 465);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -87,7 +87,7 @@ public class ChattingFrame extends JFrame {
 				int waitTime=50;
 				int lastX=ChattingFrame.this.getX();
 				int lasty=ChattingFrame.this.getY();
-				for(int n=0;n<10;n++)
+				for(int n=0;n<5;n++)
 				{
 					ChattingFrame.this.setLocation(lastX+3, lasty);
 					try {
